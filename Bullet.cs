@@ -1,33 +1,42 @@
+using System.Collections;
 using UnityEngine;
-using UnityEngine.Pool;
 
-/// <summary>
-/// Projectile that returns itself to its source pool after <see cref="_lifetime"/> seconds.
-/// Must be spawned via <see cref="ObjectPool{GameObject}"/> fed by <see cref="Shooter"/>.
-/// </summary>
 [RequireComponent(typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private float _lifetime = 3f;
+    [SerializeField] private float _speed = 10f;
 
-    private IObjectPool<GameObject> _pool;
-    private float _releaseTime;
-    private bool _released;
+    private Rigidbody _rigidbody;
+    private Coroutine _lifetimeRoutine;
 
-    public void Initialize(IObjectPool<GameObject> pool) => _pool = pool;
+    private void Awake()
+    {
+        _rigidbody = GetComponent<Rigidbody>();
+    }
 
     private void OnEnable()
     {
-        _releaseTime = Time.time + _lifetime;
-        _released = false;
+        _lifetimeRoutine = StartCoroutine(ReleaseAfterLifetime());
     }
 
-    private void Update()
+    private void OnDisable()
     {
-        if (_released || Time.time < _releaseTime)
-            return;
+        if (_lifetimeRoutine != null)
+            StopCoroutine(_lifetimeRoutine);
 
-        _released = true;
-        _pool?.Release(gameObject);
+        _lifetimeRoutine = null;
+    }
+
+    public void Launch(Vector3 direction)
+    {
+        _rigidbody.velocity = direction * _speed;
+    }
+
+    private IEnumerator ReleaseAfterLifetime()
+    {
+        yield return new WaitForSeconds(_lifetime);
+
+        Destroy(gameObject);
     }
 }
