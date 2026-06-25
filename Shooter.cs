@@ -33,12 +33,11 @@ public class Shooter : MonoBehaviour
 
         Vector3 direction = (_target.position - transform.position).normalized;
 
-        Bullet bullet = Instantiate(
-            _bulletPrefab,
+        Bullet bullet = Instantiate(_bulletPrefab);
+        bullet.Launch(
             transform.position + direction,
-            Quaternion.LookRotation(direction));
-
-        bullet.Launch(direction);
+            Quaternion.LookRotation(direction),
+            direction);
     }
 
     private IEnumerator ShootingRoutine()

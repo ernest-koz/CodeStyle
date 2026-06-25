@@ -28,8 +28,9 @@ public class Bullet : MonoBehaviour
         _lifetimeRoutine = null;
     }
 
-    public void Launch(Vector3 direction)
+    public void Launch(Vector3 position, Quaternion rotation, Vector3 direction)
     {
+        transform.SetPositionAndRotation(position, rotation);
         _rigidbody.velocity = direction * _speed;
     }
 
