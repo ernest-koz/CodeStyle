@@ -31,6 +31,7 @@ public class WaypointFollower : MonoBehaviour
             transform.position, target.position, _moveSpeed * Time.deltaTime);
 
         Vector3 toTarget = target.position - transform.position;
+
         if (toTarget.sqrMagnitude <= ArrivalThresholdSquared)
             AdvanceWaypoint();
     }
@@ -44,6 +45,7 @@ public class WaypointFollower : MonoBehaviour
     private void FaceCurrentWaypoint()
     {
         Vector3 direction = _waypoints[_currentWaypointIndex].position - transform.position;
+
         if (direction.sqrMagnitude > 0f)
             transform.forward = direction;
     }
